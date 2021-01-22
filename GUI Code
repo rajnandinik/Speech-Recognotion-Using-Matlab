@@ -1,0 +1,470 @@
+function varargout = dspgui(varargin)
+% DSPGUI MATLAB code for dspgui.fig
+%      DSPGUI, by itself, creates a new DSPGUI or raises the existing
+%      singleton*.
+%
+%      H = DSPGUI returns the handle to a new DSPGUI or the handle to
+%      the existing singleton*.
+%
+%      DSPGUI('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in DSPGUI.M with the given input arguments.
+%
+%      DSPGUI('Property','Value',...) creates a new DSPGUI or raises the
+%      existing singleton*.  Starting from the left, property value pairs are
+%      applied to the GUI before dspgui_OpeningFcn gets called.  An
+%      unrecognized property name or invalid value makes property application
+%      stop.  All inputs are passed to dspgui_OpeningFcn via varargin.
+%
+%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
+%      instance to run (singleton)".
+%
+% See also: GUIDE, GUIDATA, GUIHANDLES
+
+% Edit the above text to modify the response to help dspgui
+
+% Last Modified by GUIDE v2.5 17-Apr-2020 22:18:27
+
+% Begin initialization code - DO NOT EDIT
+gui_Singleton = 1;
+gui_State = struct('gui_Name',       mfilename, ...
+                   'gui_Singleton',  gui_Singleton, ...
+                   'gui_OpeningFcn', @dspgui_OpeningFcn, ...
+                   'gui_OutputFcn',  @dspgui_OutputFcn, ...
+                   'gui_LayoutFcn',  [] , ...
+                   'gui_Callback',   []);
+if nargin && ischar(varargin{1})
+    gui_State.gui_Callback = str2func(varargin{1});
+end
+
+if nargout
+    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+else
+    gui_mainfcn(gui_State, varargin{:});
+end
+% End initialization code - DO NOT EDIT
+
+
+% --- Executes just before dspgui is made visible.
+function dspgui_OpeningFcn(hObject, eventdata, handles, varargin)
+% This function has no output args, see OutputFcn.
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% varargin   command line arguments to dspgui (see VARARGIN)
+
+% Choose default command line output for dspgui
+handles.output = hObject;
+
+% Update handles structure
+guidata(hObject, handles);
+
+% UIWAIT makes dspgui wait for user response (see UIRESUME)
+% uiwait(handles.figure1);
+
+
+% --- Outputs from this function are returned to the command line.
+function varargout = dspgui_OutputFcn(hObject, eventdata, handles) 
+% varargout  cell array for returning output args (see VARARGOUT);
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Get default command line output from handles structure
+varargout{1} = handles.output;
+
+
+% --- Executes on button press in pushbutton1.
+function pushbutton1_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+[y,Fs1] = audioread('E:\audioclipsfordspcolours\black--_gb_1.mp3');
+% %play the input audio file
+ sound(y,Fs1);
+ mean_black=mean(periodogram(y));
+ disp("Mean of black= "+mean_black);
+% 
+% %median of psd
+ median_black=median(periodogram(y));
+ disp("Median of black="+median_black);
+% 
+% %max peak of psd
+
+ pks_black=findpeaks(periodogram(y));
+ 
+ max_black=max(pks_black);
+ disp("peak of black ="+max_black);
+T=readtable('E:\audioclipsfordspcolours\colours.xlsx');
+
+%creating table for testing the sample input
+header={'mean','median','peak'};
+xlswrite('E:\audioclipsfordspcolours\t.xlsx',header);
+info={mean_black,median_black,max_black};
+xlswrite('E:\audioclipsfordspcolours\t.xlsx',info,'Sheet1','A2');
+
+test=readtable('E:\audioclipsfordspcolours\t.xlsx');
+for i=1:10
+if test{1,1}==T{i,2}&&test{1,2}==T{i,3}&&test{1,3}==T{i,4}%compares the Mean maedian and max power of the signal with database
+    disp(T(i,1)); %displays name of the colour
+ %displays the index of colour
+ msg1=string(T{i,1});
+msgbox('The identifed colour is :'+msg1);
+end
+end
+
+% --- Executes on button press in pushbutton2.
+function pushbutton2_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+%input an audio(mp3) signal
+[f,Fs9] = audioread('E:\audioclipsfordspcolours\violet--_gb_1.mp3');
+%play the input audio file
+sound(f,Fs9);
+%maen of the psd
+mean_violet=mean(periodogram(f));
+disp("Mean of voilet="+mean_violet);
+
+%median of psd
+median_violet=median(periodogram(f));
+disp("Median of voilet="+median_violet);
+
+%max peak of psd
+pks_violet=findpeaks(periodogram(f));
+max_violet=max(pks_violet);
+disp("peak of voilet ="+max_violet);
+T=readtable('E:\audioclipsfordspcolours\colours.xlsx');
+
+%creating table for testing the sample input
+header={'mean','median','peak'};
+xlswrite('E:\audioclipsfordspcolours\t.xlsx',header);
+info={mean_violet,median_violet,max_violet};
+xlswrite('E:\audioclipsfordspcolours\t.xlsx',info,'Sheet1','A2');
+
+test=readtable('E:\audioclipsfordspcolours\t.xlsx');
+for i=1:10
+if test{1,1}==T{i,2}&&test{1,2}==T{i,3}&&test{1,3}==T{i,4}%compares the Mean maedian and max power of the signal with database
+    disp(T(i,1)); %displays name of the colour
+ %displays the index of colour
+ msg2=string(T{i,1});
+msgbox('The identified colour is :'+msg2);
+end
+end
+
+% --- Executes on button press in pushbutton3.
+function pushbutton3_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+%input an audio(mp3) signal
+[a,Fs4] = audioread('E:\audioclipsfordspcolours\indigo--_gb_1.mp3');
+%play the input audio file
+sound(a,Fs4);
+%maen of the psd
+mean_indigo=mean(periodogram(a));
+disp("Mean of indigo="+mean_indigo);
+
+%median of psd
+median_indigo=median(periodogram(a));
+disp("Median of indigo= "+median_indigo);
+
+%max peak of psd
+pks_indigo=findpeaks(periodogram(a));
+max_indigo=max(pks_indigo);
+disp("peak of indigo ="+max_indigo);
+T=readtable('E:\audioclipsfordspcolours\colours.xlsx');
+
+%creating table for testing the sample input
+header={'mean','median','peak'};
+xlswrite('E:\audioclipsfordspcolours\t.xlsx',header);
+info={mean_indigo,median_indigo,max_indigo};
+xlswrite('E:\audioclipsfordspcolours\t.xlsx',info,'Sheet1','A2');
+
+test=readtable('E:\audioclipsfordspcolours\t.xlsx');
+for i=1:10
+if test{1,1}==T{i,2}&&test{1,2}==T{i,3}&&test{1,3}==T{i,4}%compares the Mean maedian and max power of the signal with database
+    disp(T(i,1)); %displays name of the colour
+ %displays the index of colour
+ msg3=string(T{i,1});
+msgbox('The identified colour is :'+msg3);
+end
+end
+
+% --- Executes on button press in pushbutton4.
+function pushbutton4_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+%input an audio(mp3) signal
+[z,Fs2] = audioread('E:\audioclipsfordspcolours\blue--_gb_1.mp3');
+%play the input audio file
+sound(z,Fs2);
+%maen of the psd
+mean_blue=mean(periodogram(z));
+disp("Mean of blue="+mean_blue);
+
+%median of psd
+median_blue=median(periodogram(z));
+disp("Median of blue= "+median_blue);
+
+%max peak of psd
+pks_blue=findpeaks(periodogram(z));
+max_blue=max(pks_blue);
+disp("peak of blue = "+max_blue);
+
+T=readtable('E:\audioclipsfordspcolours\colours.xlsx');
+
+%creating table for testing the sample input
+header={'mean','median','peak'};
+xlswrite('E:\audioclipsfordspcolours\t.xlsx',header);
+info={mean_blue,median_blue,max_blue};
+xlswrite('E:\audioclipsfordspcolours\t.xlsx',info,'Sheet1','A2');
+
+test=readtable('E:\audioclipsfordspcolours\t.xlsx');
+for i=1:10
+if test{1,1}==T{i,2}&&test{1,2}==T{i,3}&&test{1,3}==T{i,4}%compares the Mean maedian and max power of the signal with database
+    disp(T(i,1)); %displays name of the colour
+ %displays the index of colour
+ msg4=string(T{i,1});
+msgbox('The identified colour is :'+msg4);
+end
+end
+
+% --- Executes on button press in pushbutton5.
+function pushbutton5_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+%input an audio(mp3) signal
+[c,Fs5] = audioread('E:\audioclipsfordspcolours\orange--_gb_1.mp3');
+%play the input audio file
+sound(c,Fs5);
+%maen of the psd
+mean_orange=mean(periodogram(c));
+disp("Mean of orange="+mean_orange);
+
+%median of psd
+median_orange=median(periodogram(c));
+disp("Median of orange="+median_orange);
+
+%max peak of psd
+pks_orange=findpeaks(periodogram(c));
+max_orange=max(pks_orange);
+disp("peak of orange ="+max_orange);
+
+T=readtable('E:\audioclipsfordspcolours\colours.xlsx');
+
+%creating table for testing the sample input
+header={'mean','median','peak'};
+xlswrite('E:\audioclipsfordspcolours\t.xlsx',header);
+info={mean_orange,median_orange,max_orange};
+xlswrite('E:\audioclipsfordspcolours\t.xlsx',info,'Sheet1','A2');
+
+test=readtable('E:\audioclipsfordspcolours\t.xlsx');
+for i=1:10
+if test{1,1}==T{i,2}&&test{1,2}==T{i,3}&&test{1,3}==T{i,4}%compares the Mean maedian and max power of the signal with database
+    disp(T(i,1)); %displays name of the colour
+ %displays the index of colour
+ msg5=string(T{i,1});
+msgbox('The indentified colour is :'+msg5);
+end
+end
+% --- Executes on button press in pushbutton6.
+function pushbutton6_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+%input an audio(mp3) signal
+[x,Fs3] = audioread('E:\audioclipsfordspcolours\brown--_gb_1.mp3');
+mean_brown=mean(periodogram(x));
+disp("Mean of brown="+mean_brown);
+
+%median of psd
+median_brown=median(periodogram(x));
+disp("Median of brown="+median_brown);
+
+%max peak of psd
+
+pks_brown=findpeaks(periodogram(x));
+
+max_brown=max(pks_brown);
+disp("peak of brown= "+max_brown);
+
+%play the input audio file
+sound(x,Fs3);
+
+T=readtable('E:\audioclipsfordspcolours\colours.xlsx');
+
+%creating table for testing the sample input
+header={'mean','median','peak'};
+xlswrite('E:\audioclipsfordspcolours\t.xlsx',header);
+info={mean_brown,median_brown,max_brown};
+xlswrite('E:\audioclipsfordspcolours\t.xlsx',info,'Sheet1','A2');
+
+test=readtable('E:\audioclipsfordspcolours\t.xlsx');
+for i=1:10
+if test{1,1}==T{i,2}&&test{1,2}==T{i,3}&&test{1,3}==T{i,4}%compares the Mean maedian and max power of the signal with database
+    disp(T(i,1)); %displays name of the colour
+ %displays the index of colour
+ msg6=string(T{i,1});
+msgbox('The identified colour is :'+msg6);
+end
+end
+
+% --- Executes on button press in pushbutton7.
+function pushbutton7_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton7 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+%input an audio(mp3) signal
+[d,Fs7] = audioread('E:\audioclipsfordspcolours\pink--_gb_1.mp3');
+%play the input audio file
+sound(d,Fs7);
+
+%maen of the psd
+mean_pink=mean(periodogram(d));
+disp("Mean of pink="+mean_pink);
+
+%median of psd
+median_pink=median(periodogram(d));
+disp("Median of pink= "+median_pink);
+
+%max peak of psd
+pks_pink=findpeaks(periodogram(d));
+max_pink=max(pks_pink);
+disp("peak of pink ="+max_pink);
+T=readtable('E:\audioclipsfordspcolours\colours.xlsx');
+
+%creating table for testing the sample input
+header={'mean','median','peak'};
+xlswrite('E:\audioclipsfordspcolours\t.xlsx',header);
+info={mean_pink,median_pink,max_pink};
+xlswrite('E:\audioclipsfordspcolours\t.xlsx',info,'Sheet1','A2');
+
+test=readtable('E:\audioclipsfordspcolours\t.xlsx');
+for i=1:10
+if test{1,1}==T{i,2}&&test{1,2}==T{i,3}&&test{1,3}==T{i,4}%compares the Mean maedian and max power of the signal with database
+    disp(T(i,1)); %displays name of the colour
+ %displays the index of colour
+ msg7=string(T{i,1});
+msgbox('The identified colour is :'+msg7);
+end
+end
+
+% --- Executes on button press in pushbutton8.
+function pushbutton8_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton8 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+%input an audio(mp3) signal
+[b,Fs5] = audioread('E:\audioclipsfordspcolours\magenta--_gb_1.mp3');
+%play the input audio file
+sound(b,Fs5);
+%maen of the psd
+mean_magenta=mean(periodogram(b));
+disp("Mean of magenta="+mean_magenta);
+
+%median of psd
+median_magenta=median(periodogram(b));
+disp("Median of magenta="+median_magenta);
+
+%max peak of psd
+pks_magenta=findpeaks(periodogram(b));
+max_magenta=max(pks_magenta);
+disp("peak  of magenta="+max_magenta);
+T=readtable('E:\audioclipsfordspcolours\colours.xlsx');
+
+%creating table for testing the sample input
+header={'mean','median','peak'};
+xlswrite('E:\audioclipsfordspcolours\t.xlsx',header);
+info={mean_magenta,median_magenta,max_magenta};
+xlswrite('E:\audioclipsfordspcolours\t.xlsx',info,'Sheet1','A2');
+
+test=readtable('E:\audioclipsfordspcolours\t.xlsx');
+for i=1:10
+if test{1,1}==T{i,2}&&test{1,2}==T{i,3}&&test{1,3}==T{i,4}%compares the Mean maedian and max power of the signal with database
+    disp(T(i,1)); %displays name of the colour
+ %displays the index of colour
+ msg8=string(T{i,1});
+msgbox('The identified colour is :'+msg8)
+end
+end
+
+% --- Executes on button press in pushbutton9.
+function pushbutton9_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton9 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+%input an audio(mp3) signal
+[h,Fs11] = audioread('E:\audioclipsfordspcolours\yellow--_gb_1.mp3');
+%play the input audio file
+sound(h,Fs11);
+%maen of the psd
+mean_yellow=mean(periodogram(h));
+disp("Mean of yellow="+mean_yellow);
+
+%median of psd
+median_yellow=median(periodogram(h));
+disp("Median of yellow="+median_yellow);
+
+%max peak of psd
+pks_yellow=findpeaks(periodogram(h));
+max_yellow=max(pks_yellow);
+disp("peak of yellow ="+max_yellow);
+T=readtable('E:\audioclipsfordspcolours\colours.xlsx');
+
+%creating table for testing the sample input
+header={'mean','median','peak'};
+xlswrite('E:\audioclipsfordspcolours\t.xlsx',header);
+info={mean_yellow,median_yellow,max_yellow};
+xlswrite('E:\audioclipsfordspcolours\t.xlsx',info,'Sheet1','A2');
+
+test=readtable('E:\audioclipsfordspcolours\t.xlsx');
+for i=1:10
+if test{1,1}==T{i,2}&&test{1,2}==T{i,3}&&test{1,3}==T{i,4}%compares the Mean maedian and max power of the signal with database
+    disp(T(i,1)); %displays name of the colour
+ %displays the index of colour
+ msg9=string(T{i,1});
+msgbox('The identified colour is :'+msg9)
+end
+end
+
+
+% --- Executes on button press in pushbutton10.
+function pushbutton10_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton10 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+%input an audio(mp3) signal
+[e,Fs8] = audioread('E:\audioclipsfordspcolours\purple--_gb_1.mp3');
+%play the input audio file
+sound(e,Fs8);
+%maen of the psd
+mean_purple=mean(periodogram(e));
+disp("Mean of purple="+mean_purple);
+
+%median of psd
+median_purple=median(periodogram(e));
+disp("Median of purple="+median_purple);
+
+%max peak of psd
+pks_purple=findpeaks(periodogram(e));
+max_purple=max(pks_purple);
+disp("peak of purple ="+max_purple);
+T=readtable('E:\audioclipsfordspcolours\colours.xlsx');
+
+%creating table for testing the sample input
+header={'mean','median','peak'};
+xlswrite('E:\audioclipsfordspcolours\t.xlsx',header);
+info={mean_purple,median_purple,max_purple};
+xlswrite('E:\audioclipsfordspcolours\t.xlsx',info,'Sheet1','A2');
+
+test=readtable('E:\audioclipsfordspcolours\t.xlsx');
+for i=1:10
+if test{1,1}==T{i,2}&&test{1,2}==T{i,3}&&test{1,3}==T{i,4}%compares the Mean maedian and max power of the signal with database
+    disp(T(i,1)); %displays name of the colour
+ %displays the index of colour
+ msg10=string(T{i,1});
+msgbox('The identified colour is :'+msg10)
+end
+end
